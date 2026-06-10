@@ -101,27 +101,55 @@ function normalizeProjectName(text) {
     .replace(/(^|[\s-])[a-z]/g, (match) => match.toUpperCase());
 }
 
+function classifyProjectType(text) {
+  const key = text.toLowerCase();
+  if (
+    key.includes("actuator") ||
+    key.includes("motor") ||
+    key.includes("servo") ||
+    key.includes("display") ||
+    key.includes("led") ||
+    key.includes("piezo") ||
+    key.includes("neopixel") ||
+    key.includes("buffer") ||
+    key.includes("segment")
+  ) {
+    return "Actuator";
+  }
+
+  if (
+    key.includes("sensor") ||
+    key.includes("photoresistor") ||
+    key.includes("potentiometer") ||
+    key.includes("temperature") ||
+    key.includes("tilt") ||
+    key.includes("ultrasonic") ||
+    key.includes("force") ||
+    key.includes("gas") ||
+    key.includes("ambient") ||
+    key.includes("pir")
+  ) {
+    return "Sensor";
+  }
+
+  return "Project";
+}
+
 function generateProjectDescription(text) {
   const cleaned = normalizeProjectName(text).replace(/\s*\(.*?\)/g, "").trim();
-  const label = text.toLowerCase().includes("sensor")
-    ? "Sensor-focused"
-    : text.toLowerCase().includes("actuator")
-    ? "Actuator-driven"
-    : "Hands-on";
-  return `${label} Tinkercad assignment for ${cleaned}. Arduino-based prototype with circuit layout and code assets.`;
+  const type = classifyProjectType(text);
+  return `${type} experiment for ${cleaned}. Arduino, Tinkercad, and IoT systems with project wiring and code summaries.`;
 }
 
 function chooseProjectIcon(text) {
   const key = text.toLowerCase();
-  if (key.includes("led")) return Sparkles;
-  if (key.includes("motor")) return Rocket;
-  if (key.includes("sensor")) return Cpu;
-  if (key.includes("display")) return ScreenIcon;
-  return Cpu;
-}
-
-function ScreenIcon(props) {
-  return <Rocket {...props} />;
+  if (key.includes("motor") || key.includes("servo") || key.includes("actuator") || key.includes("display") || key.includes("neopixel") || key.includes("led") || key.includes("piezo") || key.includes("buffer") || key.includes("segment")) {
+    return Rocket;
+  }
+  if (key.includes("sensor") || key.includes("photoresistor") || key.includes("potentiometer") || key.includes("temperature") || key.includes("tilt") || key.includes("ultrasonic") || key.includes("force") || key.includes("gas") || key.includes("ambient") || key.includes("pir")) {
+    return Cpu;
+  }
+  return Sparkles;
 }
 
 function App() {
@@ -290,11 +318,7 @@ function TinkercadPage() {
         setProjectsData(
           folders.map((folder) => {
             const projectName = normalizeProjectName(folder);
-            const projectType = folder.toLowerCase().includes("sensor")
-              ? "Sensor"
-              : folder.toLowerCase().includes("actuator")
-              ? "Actuator"
-              : "Project";
+            const projectType = classifyProjectType(folder);
             return {
               id: folder,
               folder,
@@ -336,11 +360,12 @@ function TinkercadPage() {
     <main>
       <section className="hero-section hero-tinkercad">
         <div className="hero-copy">
-          <span className="eyebrow"><Sparkles size={16} /> Arduino • Tinkercad • IoT Experiments</span>
+          <span className="eyebrow"><Sparkles size={16} /> Arduino • Tinkercad • IoT Systems</span>
           <h1>Tinkercad Projects</h1>
-          <p className="hero-tagline">Sensors &amp; Actuators Lab</p>
+          <p className="hero-tagline">Sensors & Actuators Laboratory</p>
+          <p className="hero-description">PM Vikas Internship Project</p>
           <p>
-            Live project cards generated from your GitHub assignments repository. Browse all sensor and actuator labs with search, filters, and repository links.
+            Explore every sensor and actuator experiment from the repository with a premium laboratory dashboard experience.
           </p>
           <div className="hero-actions">
             <a className="primary-action" href="https://github.com/mahimasj07/sensors-and-actuators" target="_blank" rel="noreferrer">
